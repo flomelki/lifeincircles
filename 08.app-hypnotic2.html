@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+
+<div id="container" style="background-color:black;"></div>
+<script type="text/javascript" src="./all_data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+
+<script type="module">
+
+import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+
+// this line is used to sort data and visually place naps & insomnia in front of the others 
+data = _.each(data, d => d.dt = getDateWithOffset(new Date(d.dt)));
+data = _.sortBy(data, d => d.dt)
+data = data.slice(0, 12 * 24 * 30)
+data =_.filter(data, d => ['work', 'night', 'misc'].includes(d.type)).concat(_.filter(data, d => ['naps', 'insomnias'].includes(d.type)));
+
+let events = ['work', 'night', 'misc', 'naps', 'insomnias']
+
+// Declare the chart dimensions and margins.
+const width = window.innerWidth * 0.95;
+const height = window.innerHeight * .95;
+const marginTop = 20;
+const innerRadius = 50;
+
+let mindt = new Date(_.minBy(data, 'dt').dt);
+let maxdt = new Date(_.maxBy(data, 'dt').dt);
+
+var set = { 'work'      : { color : '#FFBDBB',  opacity : 0.75 },
+            'night'     : { color : 'white',    opacity : 0.5 },
+            'insomnias' : { color : '#C40700',     opacity : 0.8 },
+            'misc'      : { color : '#CBCECA',  opacity : 0.1 },
+            'naps'      : { color : '#5EF6EC',     opacity : 0.8 }};
+
+
+let date_range = d3.scaleTime()
+    .domain([mindt.getTime(), maxdt.getTime()])
+    .range([50, height / 2 * 0.98]);
+
+
+let time_range = d3.scaleLinear()
+    .domain([0, 24 * 60 - 1])
+    .range([0, 2 * Math.PI]);
+
+let deg_time_range = d3.scaleLinear()
+    .domain([0, 24 * 60 - 1])
+    .range([-195, 165]);    
+
+let r_date_range = d3.scaleTime()
+    .domain([new Date(2016,6,19).getTime(), new Date(2017,6,18).getTime()])
+    .range([2, 5]);
+
+let getDate = function(dt)
+{
+    dt = new Date(dt);
+    return new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()).getTime();
+}
+
+let getTime = function(dt)
+{
+    dt = new Date(dt);
+    return dt.getHours() * 60 + dt.getMinutes();
+}
+
+
+function getDateWithOffset(d)
+{
+    return new Date(new Date(d).getTime() + new Date(d).getTimezoneOffset() * 60000)
+}
+
+// Create the SVG container.
+const svg = d3.create("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+let g = svg.append("g")
+    .attr("transform", `translate(${width/2}, ${height/2} )`);
+
+
+g.selectAll('path').data(data).enter().append('path')
+        .attr("transform", d => `translate(${Math.cos(time_range(getTime(d.dt)) - Math.PI / 2) * date_range(getDate(d.dt))}, ${Math.sin(time_range(getTime(d.dt)) - Math.PI / 2) * date_range(getDate(d.dt))} ), rotate(${deg_time_range(getTime(d.dt))}), scale(${['naps', 'insomnias'].includes(d.type) ? .15 : .05})`)
+        .attr('d', 'm296.54931,358.67594c-14.51874,-1.22896 -20.6597,-13.33274 -17.69187,-22.39305c5.10584,-14.31226 25.08068,-24.20295 45.12111,-25.81097c7.60365,-0.44638 15.98729,-0.37074 22.24962,3.03712c5.1394,-1.45161 1.52348,-7.17659 2.46151,-10.60796c0,-42.22834 0,-84.4567 0,-126.68504c12.92446,-1.33898 4.57881,11.67567 6.85841,17.00617c-0.08564,46.61247 0.53618,93.22961 -0.6559,139.83765c-6.30244,17.41937 -33.99349,28.45519 -58.34288,25.61607zm2.45525,-7.6144c19.83471,-4.48543 38.29347,-13.84654 47.73005,-27.30335c0.82447,-8.3188 -13.81167,-6.58834 -20.42745,-3.77955c-11.65182,4.15197 -22.61836,9.60596 -31.70517,16.2698c-6.03404,3.94336 -13.71449,16.06418 0.6791,15.3765l1.98829,-0.19957l1.73516,-0.36383l0,0l0.00002,0.00001z')
+        .attr('stroke', 'white')
+        .attr('fill', d => set[d.type].color )
+        .attr('opacity', d => set[d.type].opacity)
+        .attr('stroke-width', 1)
+
+
+
+// Append the SVG element.
+container.append(svg.node());
+
+</script>

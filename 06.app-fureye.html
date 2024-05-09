@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+
+<div id="container" style="background-color:black;"></div>
+<script type="text/javascript" src="./all_data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+
+<script type="module">
+
+import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+
+// this line is used to sort data and visually place naps & insomnia in front of the others 
+//data =_.filter(data, d => ['work', 'night', 'misc'].includes(d.type)).concat(_.filter(data, d => ['naps', 'insomnias'].includes(d.type)));
+data = _.each(data, d => d.dt = getDateWithOffset(new Date(d.dt)));
+data = _.sortBy(data, d => d.dt)
+let events = ['work', 'night', 'misc', 'naps', 'insomnias']
+
+// Declare the chart dimensions and margins.
+const width = window.innerWidth * 0.95;
+const height = window.innerHeight * .95;
+const marginTop = 20;
+const innerRadius = 50;
+
+let mindt = new Date(_.minBy(data, 'dt').dt);
+let maxdt = new Date(_.maxBy(data, 'dt').dt);
+
+let date_range = d3.scaleTime()
+    .domain([new Date(2016,6,19).getTime(), new Date(2017,6,18).getTime()])
+    .range([50, height / 2 * 0.98]);
+
+
+let time_range = d3.scaleLinear()
+    .domain([0, 24 * 60 - 1])
+    .range([0, 2 * Math.PI]);
+
+let r_date_range = d3.scaleTime()
+    .domain([new Date(2016,6,19).getTime(), new Date(2017,6,18).getTime()])
+    .range([2, 5]);
+
+let set = { 'work'      : { color : '#FFBDBB',  opacity : 0.75 },
+            'night'     : { color : 'white',    opacity : 0.5 },
+            'insomnias' : { color : '#C40700',     opacity : 1 },
+            'misc'      : { color : '#CBCECA',  opacity : 0.1 },
+            'naps'      : { color : '#5EF6EC',     opacity : 1 }};
+
+let getDate = function(dt)
+{
+    dt = new Date(dt);
+    return new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()).getTime();
+}
+
+let getTime = function(dt)
+{
+    dt = new Date(dt);
+    return dt.getHours() * 60 + dt.getMinutes();
+}
+
+
+function getDateWithOffset(d)
+{
+    return new Date(new Date(d).getTime() + new Date(d).getTimezoneOffset() * 60000)
+}
+
+// Create the SVG container.
+const svg = d3.create("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+let g = svg.append("g")
+    .attr("transform", `translate(${width/2}, ${height/2} )`);
+
+g.selectAll('line').data(data).enter().append('line')
+        .attr('x1', function(d) { return Math.cos(time_range(getTime(d.dt)) - Math.PI / 2) * date_range(getDate(d.dt)) + Math.cos(2 * Math.PI * Math.random() ) * (events.indexOf(d.type)+1) * 5  })
+        .attr('y1', function(d) { return Math.sin(time_range(getTime(d.dt)) - Math.PI / 2) * date_range(getDate(d.dt)) + Math.sin(2 * Math.PI * Math.random() ) * (events.indexOf(d.type)+1) * 5  })
+        .attr('x2', function(d) { return Math.cos(time_range(getTime(d.dt)) - Math.PI / 2) * date_range(getDate(d.dt)) - Math.cos(2 * Math.PI * Math.random() ) * (events.indexOf(d.type)+1) * 5  })
+        .attr('y2', function(d) { return Math.sin(time_range(getTime(d.dt)) - Math.PI / 2) * date_range(getDate(d.dt)) - Math.sin(2 * Math.PI * Math.random() ) * (events.indexOf(d.type)+1) * 5  })
+        .attr('stroke', d => set[d.type].color )
+        .attr('opacity', d => set[d.type].opacity)
+        .attr('stroke-width', d => ['naps', 'insomnias'].includes(d.type) ? 1.5 : 1)
+
+
+
+// Append the SVG element.
+container.append(svg.node());
+
+</script>
