@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 <div id="container" style="background-color:black;"></div>
+<script type="text/javascript" src="./common.js"></script>
 <script type="text/javascript" src="./all_data.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
 
@@ -43,24 +44,6 @@ let set = { 'work'      : { color : '#FFBDBB',  opacity : 0.75 },
             'misc'      : { color : '#CBCECA',  opacity : 0.1 },
             'naps'      : { color : '#5EF6EC',     opacity : 1 }};
             
-let getDate = function(dt)
-{
-    dt = new Date(dt);
-    return new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()).getTime();
-}
-
-let getTime = function(dt)
-{
-    dt = new Date(dt);
-    return dt.getHours() * 60 + dt.getMinutes();
-}
-
-
-function getDateWithOffset(d)
-{
-    return new Date(new Date(d).getTime() + new Date(d).getTimezoneOffset() * 60000)
-}
-
 // Create the SVG container.
 const svg = d3.create("svg")
     .attr("width", width)
