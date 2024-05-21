@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<div id="container" style="background-color:black;"></div>
+<div id="container"></div>
 <script type="text/javascript" src="./common.js"></script>
 <script type="text/javascript" src="./all_data.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
@@ -8,6 +8,8 @@
 <script type="module">
 
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+
+d3.select('#container').style('background-color', BLACK1)
 
 //data = data.slice(0, 5000)
 data = _.filter(data, d => d.type === 'misc')
