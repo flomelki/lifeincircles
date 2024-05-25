@@ -22,11 +22,12 @@ const width = window.innerWidth * 0.95;
 const height = window.innerHeight * .95;
 const innerRadius = 10;
 
-var set = { 'work'      : { color : 'lightblue',  opacity : 0 },
-            'night'     : { color : 'lightblue',    opacity : 0 },
-            'insomnias' : { color : 'lightblue',     opacity : 0 },
-            'misc'      : { color : 'lightblue',  opacity : 0 },
-            'naps'      : { color : 'lightblue',     opacity : 0 }};
+let set = { 'work'      : { color : '#FFBDBB',  opacity : 0.75 },
+            'night'     : { color : 'white',    opacity : 0.5 },
+            'insomnias' : { color : '#C40700',     opacity : 1 },
+            'misc'      : { color : '#CBCECA',  opacity : 0.1 },
+            'naps'      : { color : '#5EF6EC',     opacity : 1 }};
+
 
 let time_range = d3.scaleLinear()
     .domain([0, 24 * 60 - 1])
@@ -49,19 +50,27 @@ let date_range = d3.scaleTime()
 
 let r_date_range = d3.scaleTime()
     .domain([mindt, maxdt])
-    .range([1, 25]);
+    .range([1, 15]);
 
 let g = svg.append("g")
     .attr("transform", `translate(${width/2}, ${height * (.5)} )`);
 
-g.selectAll('line').data(idata).enter().append('line')
+g.selectAll('circle').data(_.filter(idata, d => d.off === null)).enter().append('circle')
+        .attr('cx', function(d) { return Math.cos(time_range(getTime(d.dt)) - Math.PI / 2) * date_range(getDate(d.dt)) })
+        .attr('cy', function(d) { return Math.sin(time_range(getTime(d.dt)) - Math.PI / 2) * date_range(getDate(d.dt)) })
+        .attr('stroke', d => set[d.type].color)
+        .attr('fill',null )
+        .attr('r', d => r_date_range(d.dt))
+        .attr('opacity', d => set[d.type].opacity)
+
+
+g.selectAll('line').data(_.filter(idata, d => d.off !== null)).enter().append('line')
         .attr('x1', function(d) { return Math.cos(time_range(getTime(d.dt)) - Math.PI / 2) * date_range((d.dt)) })
         .attr('y1', function(d) { return Math.sin(time_range(getTime(d.dt)) - Math.PI / 2) * date_range((d.dt)) })
         .attr('x2', function(d) { return Math.cos(time_range(getTime(d.dt)) - Math.PI / 2) * date_range((d.dt)) + Math.cos(time_range(getTime(d.dt)) + Math.PI / 4 ) * (- r_date_range(d.dt)) * Math.random() * 3  })
         .attr('y2', function(d) { return Math.sin(time_range(getTime(d.dt)) - Math.PI / 2) * date_range((d.dt)) + Math.sin(time_range(getTime(d.dt)) + Math.PI / 4 ) * (- r_date_range(d.dt)) * Math.random() * 3  })
-     //   .attr('stroke', d => d.sick !== null ? d3.scaleLinear().domain( [0,1]).range(['#FF2FA5', '#FF80C8'])(Math.random()) : set[d.type].color )
-        .attr('stroke', d => d.sick !== null ? '#FF2FA5' : set[d.type].color )
-        .attr('opacity', d =>  d.sick !== null ?  0.4 : set[d.type].opacity)
+        .attr('stroke', d => '#80FFC6' )
+        .attr('opacity', d =>  0.4 )
 
 
 // Append the SVG element.
