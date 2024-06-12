@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<div id="container" style="background-color:black;"></div>
+<script type="text/javascript" src="./common.js"></script>
+<script type="text/javascript" src="./all_data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+
+<script type="module">
+
+import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+
+// this line is used to sort data and visually place naps & insomnia in front of the others 
+data =_.filter(data, d => ['work', 'night', 'misc'].includes(d.type)).concat(_.filter(data, d => ['naps', 'insomnias'].includes(d.type)));
+data = _.each(data, d => d.dt = getDateWithOffset(new Date(d.dt)));
+data = _.each(data, d => d.hm = d.dt.getHours() * 60 + d.dt.getMinutes());
+
+// Declare the chart dimensions and margins.
+const width = window.innerWidth * 0.95;
+const height = window.innerHeight * .99;
+
+let mindt = new Date(_.minBy(data, 'dt').dt);
+let maxdt = new Date(_.maxBy(data, 'dt').dt);
+let y = d3.scaleLinear().domain([0, 24*60]).range([window.innerHeight * .95, window.innerHeight * .05])
+
+let set = { 'work'      : { color : '#FFBDBB', index: 0,  opacity : 0.75 },
+            'night'     : { color : 'white', index: 1,    opacity : 0.5 },
+            'insomnias' : { color : '#C40700', index: -1,     opacity : 1 },
+            'misc'      : { color : '#CBCECA', index: 2,  opacity : 0.1 },
+            'naps'      : { color : '#5EF6EC', index: -2,     opacity : 1 }};
+
+// Create the SVG container.
+const svg = d3.create("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+let g = svg.append("g");
+
+g.selectAll('line').data(data).enter().append('line')
+        .attr('x1', function(d) { return (set[d.type].index ) * 100 + Math.random() * 2 + width / 2 + Math.cos(2 * Math.PI * Math.random() ) *  5  })
+        .attr('x2', function(d) { return (set[d.type].index ) * 100 + Math.random() * 2 + width / 2 - Math.cos(2 * Math.PI * Math.random() ) *  5  })
+        .attr('y1', d => y(d.hm) + Math.sin(2 * Math.PI * Math.random() ) *  5)
+        .attr('y2', d => y(d.hm) - Math.sin(2 * Math.PI * Math.random() ) *  5)
+        .attr('stroke', d => set[d.type].color )
+        .attr('stroke-width', 1.5)
+        .attr('r', d => 6)
+        .attr('opacity', d => 0.2)
+
+
+
+// Append the SVG element.
+container.append(svg.node());
+
+</script>
