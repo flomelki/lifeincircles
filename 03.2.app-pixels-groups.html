@@ -9,6 +9,8 @@
 
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
+d3.select('#container').style('background-color', BLACK5)
+
 //data = data.slice(0, 5000)
 //data = _.filter(data, d => d.type === 'naps')
 data = _.each(data, d => d.dt = getDateWithOffset(new Date(d.dt)));
