@@ -9,7 +9,7 @@
 
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
-d3.select('#container').style('background-color', BLACK5)
+d3.select('body').style('background-color', BLACK5)
  
 // this line is used to sort data and visually place naps & insomnia in front of the others 
 data =_.filter(data, d => ['work', 'night', 'misc'].includes(d.type)).concat(_.filter(data, d => ['naps', 'insomnias'].includes(d.type)));
