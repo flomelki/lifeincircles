@@ -16,8 +16,8 @@ var getDateWithOffset = function(d)
     return new Date(new Date(d).getTime() + new Date(d).getTimezoneOffset() * 60000)
 }
 
-var BG1 = '#282828';
-var BG2 = '#051118';
-var BG3 = '#0F1B20';
-var BG4 = '#222022';
-var BG5 = '#0C0C0C';
+var BG1 = '#FF8C9E';  	// pink
+var BG2 = '#D6EFD8';	// water green
+var BG3 = '#1679AB';	// nice blue
+var BG4 = '#C40C0C';	// severe orange
+var BG5 = '#F6EACB';	// kind of sand
