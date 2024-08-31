@@ -23,11 +23,11 @@ const width = window.innerWidth * 0.95;
 const height = window.innerHeight * .95;
 const innerRadius = 10;
 
-var set = { 'night'     : { color : 'white',        opacity :  d3.scaleLinear().domain( [0,1]).range([0.3, 0.6]) },
-            'work'      : { color : 'black',            opacity :  d3.scaleLinear().domain( [0,1]).range([0.3, 0.6]) },
-            'insomnias' : { color : 'white',        opacity :  d3.scaleLinear().domain( [0,1]).range([0.3, 0.6]) },
-            'misc'      : { color : 'white',        opacity :  d3.scaleLinear().domain( [0,1]).range([0.3, 0.6]) },
-            'naps'      : { color : 'white',        opacity :  d3.scaleLinear().domain( [0,1]).range([0.3, 0.6]) }};
+var set = { 'night'     : { color : 'white',        opacity :  d3.scaleLinear().domain( [0,1]).range([0.5, 0.8]) },
+            'work'      : { color : 'black',            opacity :  d3.scaleLinear().domain( [0,1]).range([0.5, 0.8]) },
+            'insomnias' : { color : 'white',        opacity :  d3.scaleLinear().domain( [0,1]).range([0.5, 0.8]) },
+            'misc'      : { color : 'white',        opacity :  d3.scaleLinear().domain( [0,1]).range([0.5, 0.8]) },
+            'naps'      : { color : 'white',        opacity :  d3.scaleLinear().domain( [0,1]).range([0.5, 0.8]) }};
 
 let time_range = d3.scaleLinear()
     .domain([0, 24 * 60 - 1])

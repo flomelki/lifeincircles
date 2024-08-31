@@ -42,7 +42,7 @@ g.selectAll('line').data(data).enter().append('line')
         .attr('x1', d => x(d.hm))
         .attr('x2', d => x(d.hm) + Math.sin(2 * Math.PI * Math.random() ) * Math.random() * 25)
         .attr('stroke', d =>  set[d.type].color )
-        .attr('stroke-width', d => ['naps', 'insomnias'].includes(d.type) ? .5 : 0.25)
+        .attr('stroke-width', d => ['naps', 'insomnias'].includes(d.type) ? 0.9 : 0.25)
         .attr('opacity', d => Math.random())
 
 
